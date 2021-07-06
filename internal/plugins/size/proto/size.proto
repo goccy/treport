@@ -1,0 +1,7 @@
+syntax = "proto3";
+
+package proto;
+
+message SizeData {
+  int64 size = 1;
+}

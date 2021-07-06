@@ -1,0 +1,22 @@
+project:
+  path: $HOME/.treport.d
+plugin:
+  scanner:
+    - size
+  storer:
+    - influxdb
+pipelines:
+  - name: size
+    desc: repository size scanning pipeline
+    strategy: allMergeCommit
+    repository:
+      - repo: github.com/goccy/go-json
+        branch: master
+      - repo: github.com/goccy/go-yaml
+        auth:
+          user: GITHUB_USER
+          password: GITHUB_TOKEN
+    scanner:
+      - size # or [ size ]
+    storer:
+      - influxdb

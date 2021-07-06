@@ -1,0 +1,64 @@
+syntax = "proto3";
+
+package proto;
+
+import "google/protobuf/any.proto";
+import "google/protobuf/timestamp.proto";
+
+message Commit {
+  string hash = 1;
+  Signature author = 2;
+  Signature committer = 3;
+  string pgpSignature = 4;
+  string message = 5;
+  string treeHash = 6;
+  repeated string parentHashes = 7;
+}
+
+message Signature {
+  string name = 1;
+  string email = 2;
+  google.protobuf.Timestamp when = 3;
+}
+
+message Snapshot {
+  string hash = 1;
+  repeated File entries = 2;
+}
+
+message File {
+  string name = 1;
+  uint32 mode = 2;
+  int64 size = 3;
+  string hash = 4;
+}
+
+message Change {
+  string action = 1;
+  File from = 2;
+  File to = 3;
+}
+
+message Cache {
+  Commit commit = 1;
+  Snapshot snapshot = 2;
+  repeated Change changes = 3;
+  ScanResponse data = 4;
+}
+
+message ScanContext {
+  Commit commit = 1;
+  Snapshot snapshot = 2;
+  repeated Change changes = 3;
+  map<string,ScanResponse> data = 4;
+}
+
+message ScanResponse {
+  string name = 1;
+  google.protobuf.Any data = 2;
+  string json = 3;
+}
+
+service Scanner {
+  rpc Scan(ScanContext) returns (ScanResponse);
+}
